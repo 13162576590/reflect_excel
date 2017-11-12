@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	 <script src="/UserWeb/jquery.min.js"></script>
+ 	 <script src="/UserWeb/underscore-min.js"></script>
+  	 <script src="/UserWeb/user.js"></script>
+</head>
+<body>
+	<table id="table">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>姓名</th>
+				<th>地址</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="user-list">
+		
+		</tbody>
+	</table>
+	
+        <script id="user-tpl" type="text/template">
+            <%_.each(data, function(item, i) { %>
+				<tr>
+					<td><%=item.id></td>
+					<td><%=item.name></td>
+					<td><%=item.address></td>
+					<td>删除</td>
+				</tr>
+            <%}); %>
+        </script>
+        
+</body>
+</html>

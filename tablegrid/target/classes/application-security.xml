@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security-4.1.xsd">
+    <http pattern="/static/**" security="none"></http>
+    <http pattern="/errors/**" security="none"></http>
+
+    <http auto-config="false" use-expressions="true" create-session="ifRequired">
+        <intercept-url pattern="/account/signin" access="isAuthenticated() or isAnonymous()" />
+        <intercept-url pattern="/**" access="isAuthenticated()" />
+
+<!--         <form-login login-page="/account/signin" authentication-failure-url="/account/signin?error=1"
+            login-processing-url="/account/signin" default-target-url="/index"
+            always-use-default-target="false" /> -->
+            <form-login login-page="/account/signin" 
+                login-processing-url="/account/signin"
+                authentication-success-handler-ref="authSuccessHandler"
+                authentication-failure-handler-ref="authFailureHandler"/>
+        
+        <logout logout-success-url="/account/signin" logout-url="/account/signout" delete-cookies="JSESSIONID,SESSION" />
+
+        <session-management>
+            <concurrency-control max-sessions="1" />
+        </session-management>
+
+        <csrf disabled="true" />
+    </http>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="customUserDetailsService">
+            <password-encoder ref="bcryptEncoder"></password-encoder>
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="authSuccessHandler" class="com.daily.life.admin.security.service.impl.AuthenticationSuccessHandler" />
+    <beans:bean id="authFailureHandler" class="com.daily.life.admin.security.service.impl.AuthenticationFailureHandler" />
+
+    <beans:bean name="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+    <beans:bean id="customUserDetailsService" class="com.daily.life.admin.security.service.impl.UserDetailsServiceImpl" />
+
+    <beans:bean class="org.springframework.security.web.session.HttpSessionEventPublisher"/>
+</beans:beans>
