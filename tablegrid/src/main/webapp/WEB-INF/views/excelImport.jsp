@@ -29,11 +29,13 @@
 
 		<button id="template" >下载模板</button>
 
+		<button id="array_id" >接收数组</button>
+
 
 		<div id="divDatagrid" data-options="region:'center',border:false">
 			<table id="dataGrid"></table>
 		</div>
-			<table id="edit-template" class="user-list">
+	<%-- 		<table id="edit-template" class="user-list">
 				<c:forEach items="${items}" var="item" varStatus="status">  
 					<c:choose>
 					　　<c:when test="${status.index % 2 == 0}">
@@ -105,7 +107,7 @@
 						</c:when>
 					</c:choose>
 				</c:forEach>  
-			</table>
+			</table> --%>
 	</div>
 	<div id="toolbar" style="display: none;">
 		<a onclick="addFun();" href="javascript:void(0);"
@@ -167,7 +169,8 @@
 			}
 		});
 		
-		$('#select').change(function(){			
+		$('#select').change(function(){		
+
 			//通过ajax请求生成的新的datagrid的列名
 			$.ajax({
 				//url : '${pageContext.request.contextPath}/excelController/tableHead?tableName=' +  $("#select ").val() ,
@@ -176,7 +179,7 @@
 				dataType : 'json',
 				data : {tableName: $("#select").val()},
 				success : function(data) {//获取表头数据成功后，使用easyUi的datagrid去生成表格
-
+	
 					var $dataGrid = $('#dataGrid').datagrid({
 						url : '${pageContext.request.contextPath}/excelController/dataGrid?tableName=' +  $("#select").val(),
 						fitColumns : true,
@@ -198,6 +201,36 @@
 	
 		$("#template").click(function(){
             window.open('${pageContext.request.contextPath}/excelController/download?tableName=' + $("#select").val());
+		});
+		
+		
+		$("#array_id").click(function(){
+			var params = [];
+			
+			for (var i=0; i< 2; i++) {
+				params.push({
+					id : 'id' + i,
+					name : 'name' + i,
+					address : 'address' + i
+				});
+
+			}
+			
+			$.ajax({
+				url : '${pageContext.request.contextPath}/excelController/array/params',
+				type : "post",
+				dataType : 'json',
+				data : JSON.stringify(params),
+				contentType: 'application/json;charset=utf-8',
+				success : function(data) {//获取表头数据成功后，使用easyUi的datagrid去生成表格
+	
+					
+				},
+				error : function(xhr) {
+					alert('8888');
+				}
+			});
+
 		});
 
 		function getColumns(data) {

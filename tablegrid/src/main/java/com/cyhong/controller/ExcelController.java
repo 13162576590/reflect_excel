@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +26,7 @@ import com.cyhong.model.ActuaryExtractCoeff;
 import com.cyhong.model.ActuaryInsuation;
 import com.cyhong.model.DataGrid;
 import com.cyhong.model.TableHead;
+import com.cyhong.model.User;
 
 @RestController
 @RequestMapping(value="/excelController")
@@ -123,6 +125,7 @@ public class ExcelController {
     
 	@RequestMapping("/tableHead")
 	public List<TableHead> tableHead(String tableName) {
+		        
 		Map<String, List<TableHead>> map = new HashMap<>();
 		List<TableHead> acI = new ArrayList<TableHead>();
 		TableHead th1 = new TableHead();
@@ -227,6 +230,22 @@ public class ExcelController {
 		System.out.println(data.get(tableName));
 
 		return dg;
+	}
+		
+	/**
+	 * 接收一个数组
+	 * @param users
+	 */
+    @RequestMapping("/array/params")
+    public Json arrayParams(@RequestBody User[] users) {
+        Json json = new Json();
+
+		System.out.println(users);
+		
+		System.out.println(users);
+    	
+    	return json;
+    	
 	}
 	
 	/**
