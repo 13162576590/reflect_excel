@@ -31,6 +31,9 @@
 
 		<button id="array_id" >接收数组</button>
 
+		<button id="data_id" >测试1</button>
+		<button id="data_id2" >测试2</button>
+
 
 		<div id="divDatagrid" data-options="region:'center',border:false">
 			<table id="dataGrid"></table>
@@ -203,6 +206,14 @@
             window.open('${pageContext.request.contextPath}/excelController/download?tableName=' + $("#select").val());
 		});
 		
+		
+		$("#data_id").click(function(){
+            window.open('${pageContext.request.contextPath}/excelController/export?tableName=' + $("#select").val());
+		});
+		
+		$("#data_id2").click(function(){
+            window.open('${pageContext.request.contextPath}/excelController/export/data?tableName=' + $("#select").val());
+		});
 		
 		$("#array_id").click(function(){
 			var params = [];

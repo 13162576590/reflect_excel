@@ -1,6 +1,7 @@
 package com.cyhong.controller;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -327,5 +330,114 @@ public class ExcelController {
 //        return json;
     }
 	
-	
+  //获得总列数 Excel
+//    int coloumNum=sheet.getRow(0).getPhysicalNumberOfCells();
+    
+    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    @ResponseBody
+    public void export(String tableName, HttpServletResponse response)
+            throws Exception {
+    	
+        List<User> users = new ArrayList<User>();
+        User user1 = new User();
+        user1.setAddress("上海");
+        user1.setId("1000001");
+        user1.setName("chen");
+        users.add(user1);
+        
+        User user2 = new User();
+        user2.setAddress("北京");
+        user2.setId("1000002");
+        user2.setName("beijing");
+        users.add(user2);
+        
+        User user3 = new User();
+        user3.setAddress("天津");
+        user3.setId("1000003");
+        user3.setName("tianjin");
+        users.add(user3);
+        
+        Resource resource = appContext.getResource("classpath:excel-config/test2.xlsx");
+
+        if (resource != null && resource.exists()) {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition",
+                    "attachment;filename=" + URLEncoder.encode("测试Excel.xlsx", "UTF-8"));
+            Context xlsContext = new Context();
+            xlsContext.putVar("rows", users);
+            try {
+                JxlsHelper.getInstance().processTemplate(resource.getInputStream(), response.getOutputStream(),
+                        xlsContext);
+            } catch (IOException e) {
+                throw e;
+            }
+        } else {
+//            throw new NotFoundException();
+        }
+    }
+
+    @RequestMapping(value = "/export/data", method = RequestMethod.GET)
+    @ResponseBody
+    public void exportData(String tableName, HttpServletResponse response)
+            throws Exception {
+    	
+        List<User> users = new ArrayList<User>();
+        User user1 = new User();
+        user1.setAddress("上海");
+        user1.setId("1000001");
+        user1.setName("chen");
+        users.add(user1);
+        
+        User user2 = new User();
+        user2.setAddress("北京");
+        user2.setId("1000002");
+        user2.setName("beijing");
+        users.add(user2);
+        
+        User user3 = new User();
+        user3.setAddress("天津");
+        user3.setId("1000003");
+        user3.setName("tianjin");
+        users.add(user3);
+        
+        List<String> names = new ArrayList<String>();
+        names.add(user1.getName());
+        names.add(user2.getName());
+        names.add(user3.getName());
+        
+        List<String> ids = new ArrayList<String>();
+        ids.add(user1.getId());
+        ids.add(user2.getId());
+        ids.add(user3.getId());
+        
+        Map<String, List<User>> rows = new HashMap<String, List<User>>();
+        rows.put(user1.getName(), users);
+        rows.put(user2.getName(), users);
+        rows.put(user3.getName(), users);
+        
+        System.out.println(rows.get(user1.getName()));
+        System.out.println(rows.get(user2.getName()));
+        System.out.println(rows.get(user3.getName()));
+
+        Resource resource = appContext.getResource("classpath:excel-config/test.xlsx");
+
+        if (resource != null && resource.exists()) {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition",
+                    "attachment;filename=" + URLEncoder.encode("测试Excel2.xlsx", "UTF-8"));
+            Context xlsContext = new Context();
+            xlsContext.putVar("names", names);
+            xlsContext.putVar("rows", rows);
+            xlsContext.putVar("ids", ids);
+            try {
+                JxlsHelper.getInstance().processTemplate(resource.getInputStream(), response.getOutputStream(),
+                        xlsContext);
+            } catch (IOException e) {
+                throw e;
+            }
+        } else {
+//            throw new NotFoundException();
+        }
+    }
+    
 }
